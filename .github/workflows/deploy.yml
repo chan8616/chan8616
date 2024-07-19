@@ -11,16 +11,20 @@ jobs:
     # Checkout the repo
     - name: Checkout Repository
       uses: actions/checkout@v3
-    # Install Dependencies 
-    - name: Install tools and utilities
-      run: |
-          sudo apt-get update \
-          && sudo apt-get -y upgrade \
-          && sudo apt-get install -y openconnect iputils-ping ocproxy openssh-client sshpass rsync make curl gettext-base \
     # Connect to VPN
     - name: Forticlient VPN
-      run: |
-          echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u "${{ secrets.VPN_USER }}" --protocol=fortinet "${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }}" --servercert "${{ secrets.VPN_SERVER_CERT }}" --passwd-on-stdin
+      uses: horellana/openconnect@v1.0.1
+      with:
+        #vpn user
+        VPN_USER: ${{ secrets.VPN_USER }}
+        # vpn password
+        VPN_PWD: ${{ secrets.VPN_PWD }}
+        # vpn host
+        VPN_HOST: ${{ secrets.VPN_HOST }}
+        # vpn port
+        VPN_PORT: ${{ secrets.VPN_PORT }}
+        # vpn server certificate
+        VPN_SERVER_CERT: ${{ secrets.VPN_SERVER_CERT }}
     # Execute Commands on Remote Server
     - name: Execute Commands on Remote Server 
       run: ssh -o StrictHostKeyChecking=no ${{ secrets.INTERNAL_SERVER_IP }} << 'ENDSSH'
