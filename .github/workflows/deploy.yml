@@ -19,7 +19,7 @@ jobs:
           && sudo apt-get install -y openconnect iputils-ping ocproxy openssh-client sshpass rsync make curl gettext-base \
     - name: Forticlient VPN
       run: |
-           echo ${{ secrets.VPN_PWD }} | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --background << 'ENDSSH'
+           echo ${{ secrets.VPN_PWD }} | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVER_CERT }} --background << 'ENDSSH'
            cd ${{ secrets.DEPLOY_PATH }}
            touch file_from_git_actions.txt
            exit
