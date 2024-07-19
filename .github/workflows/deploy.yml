@@ -1,33 +1,25 @@
-name: Deploy
-
-on:
+name: deploy
+on: 
   push:
     branches: [main]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    # Checkout the repo
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-    # Connect to VPN
-    - name: Forticlient VPN
-      uses: horellana/openconnect@v1.0.1
-      with:
-        #vpn user
-        VPN_USER: ${{ secrets.VPN_USER }}
-        # vpn password
-        VPN_PWD: ${{ secrets.VPN_PWD }}
-        # vpn host
-        VPN_HOST: ${{ secrets.VPN_HOST }}
-        # vpn port
-        VPN_PORT: ${{ secrets.VPN_PORT }}
-        # vpn server certificate
-        VPN_SERVER_CERT: ${{ secrets.VPN_SERVER_CERT }}
-    # Execute Commands on Remote Server
-    - name: Execute Commands on Remote Server 
-      run: ssh -o StrictHostKeyChecking=no ${{ secrets.INTERNAL_SERVER_IP }} << 'ENDSSH'
-           cd ${{ secrets.DEPLOY_PATH }}
-           touch file_from_git_actions.txt
-           ENDSSH
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install openconnect ppa
+        run: sudo add-apt-repository ppa:dwmw2/openconnect -y && sudo apt update
+      
+      - name: Install openconnect
+        run: sudo apt install -y openconnect
+      
+      - name: Connect to VPN
+        run: |
+          echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVERCERT }} --background
+
+      - name: Test if connected to VPN
+        run: |
+          cd ${{ secrets.DEPLOY_PATH }}
+          touch file_from_git_actions.txt
