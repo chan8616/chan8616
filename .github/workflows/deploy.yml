@@ -25,5 +25,4 @@ jobs:
           "
       - name: Test if connected to VPN
         run: |
-          cd ${{ secrets.DEPLOY_PATH }}
-          touch file_from_git_actions.txt
+          ping -c4 ${{ secrets.SERVER_HOST_INSIDE_VPN }}
