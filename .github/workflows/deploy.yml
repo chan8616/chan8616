@@ -13,12 +13,16 @@ jobs:
         run: sudo add-apt-repository ppa:dwmw2/openconnect -y && sudo apt update
       
       - name: Install openconnect
-        run: sudo apt install -y openconnect
+        run: sudo apt install -y expect openconnect
       
       - name: Connect to VPN
         run: |
-          echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVER_CERT }} --background
-
+          expect -c "
+          spawn sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVER_CERT }}
+          expect \"Password:\"
+          send \"${{ secrets.VPN_PWD }}\r\"
+          interact
+          "
       - name: Test if connected to VPN
         run: |
           cd ${{ secrets.DEPLOY_PATH }}
