@@ -17,7 +17,7 @@ jobs:
       
       - name: Connect to VPN
         run: |
-          echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --background
+          echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVERCERT }} --background
 
       - name: Test if connected to VPN
         run: |
