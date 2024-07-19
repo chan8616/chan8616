@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the repo
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+   # Install Dependencies 
+    - name: Install tools and utilities
+      run: |
+          sudo apt-get update \
+          && sudo apt-get -y upgrade \
+          && sudo apt-get install -y openconnect iputils-ping ocproxy openssh-client sshpass rsync make curl gettext-base \
+    - name: Forticlient VPN
+      run: |
+           echo ${{ secrets.VPN_PWD }} | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --background << 'ENDSSH'
+           cd ${{ secrets.DEPLOY_PATH }}
+           touch file_from_git_actions.txt
+           exit
+           ENDSSH
