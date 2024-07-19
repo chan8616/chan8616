@@ -20,8 +20,7 @@ jobs:
     # Connect to VPN
     - name: Forticlient VPN
       run: |
-           sudo openconnect -u ${{ secrets.VPN_USER }} --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin <<< "${{ secrets.VPN_PWD }}" &
-           sleep 10
+          echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u "${{ secrets.VPN_USER }}" --protocol=fortinet "${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }}" --servercert "${{ secrets.VPN_SERVER_CERT }}" --passwd-on-stdin
     # Execute Commands on Remote Server
     - name: Execute Commands on Remote Server 
       run: ssh -o StrictHostKeyChecking=no ${{ secrets.INTERNAL_SERVER_IP }} << 'ENDSSH'
