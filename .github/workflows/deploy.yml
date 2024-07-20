@@ -13,9 +13,14 @@ jobs:
        run: sudo add-apt-repository ppa:dwmw2/openconnect -y && sudo apt update
      - name: Install openconnect
        run: sudo apt install -y openconnect
+     - name: Save password to temp file
+       run: mkfifo /tmp/vpnpassword
+            echo ${{ secrets.VPN_PWD }} > /tmp/vpnpassword
      - name: Connect to VPN
        run: |
-         echo ${{ secrets.VPN_PWD }} | sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin
+         sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin < /tmp/vpnpassword
      - name: Test if connected to VPN
        run: |
          ping -c4 ${{ secrets.SERVER_HOST_INSIDE_VPN }}
+     - name: Remove password file
+       run: rm /tmp/vpnpassword
