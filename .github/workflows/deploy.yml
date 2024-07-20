@@ -14,8 +14,7 @@ jobs:
      - name: Install openconnect
        run: sudo apt install -y openconnect
      - name: Save password to temp file
-       run: mkfifo /tmp/vpnpassword
-            echo ${{ secrets.VPN_PWD }} > /tmp/vpnpassword
+       run: echo ${{ secrets.VPN_PWD }} > /tmp/vpnpassword
      - name: Connect to VPN
        run: |
          sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin < /tmp/vpnpassword
