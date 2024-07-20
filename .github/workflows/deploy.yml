@@ -7,23 +7,13 @@ jobs:
    name: Build, install and run openconnect / fortinet
    runs-on: ubuntu-latest
    steps:
-     - name: Setup build environment
-       run: |
-         sudo apt update && sudo apt install -y git autotools-dev automake libtool pkg-config m4 gettext openssl libssl-dev libxml2-dev vpnc-scripts
-     - name: Build OpenConnect from source
-       run: |
-         git clone https://gitlab.com/openconnect/openconnect.git
-         cd openconnect
-         git checkout v9.01
-         ./autogen.sh
-         ./version.sh version.c
-         ./configure
-         make -j$(nproc)
-         sudo make install
-         sudo ldconfig
+     # Checkout Repository
+     - uses: actions/checkout@v3
+     - name: Checkout Repository
+       run: cp ./github/vpnc-script ./vpnc-script
      - name: Connect to VPN
        run: |
-         echo "${{ secrets.VPN_PWD }}" | sudo openconnect -u ${{ secrets.VPN_USER }} --passwd-on-stdin --protocol=fortinet ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --servercert ${{ secrets.VPN_SERVER_CERT }} &
+         echo ${{ secrets.VPN_PWD }} | sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin
      - name: Test if connected to VPN
        run: |
          ping -c4 ${{ secrets.SERVER_HOST_INSIDE_VPN }}
