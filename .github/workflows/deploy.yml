@@ -10,7 +10,7 @@ jobs:
      # Checkout Repository
      - uses: actions/checkout@v3
      - name: Checkout Repository
-       run: cp ./github/vpnc-script ./vpnc-script
+       run: cp .github/vpnc-script ./vpnc-script
      - name: Connect to VPN
        run: |
          echo ${{ secrets.VPN_PWD }} | sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin
