@@ -9,8 +9,10 @@ jobs:
    steps:
      # Checkout Repository
      - uses: actions/checkout@v3
-     - name: Checkout Repository
-       run: cp ./vpnc-script ./vpnc-script
+     - name: Install openconnect ppa
+       run: sudo add-apt-repository ppa:dwmw2/openconnect -y && sudo apt update
+     - name: Install openconnect
+       run: sudo apt install -y openconnect
      - name: Connect to VPN
        run: |
          echo ${{ secrets.VPN_PWD }} | sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin
