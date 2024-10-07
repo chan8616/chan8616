@@ -1,25 +1,28 @@
-# .github/workflows/vpn.yml
-name: Can I use openconnect / fortinet on Github Actions?
-on: push
+# Lint the codebase using pre-commit
+name: Lint
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
 
 jobs:
- openconnect:
-   name: Build, install and run openconnect / fortinet
-   runs-on: ubuntu-latest
-   steps:
-     # Checkout Repository
-     - uses: actions/checkout@v3
-     - name: Install openconnect ppa
-       run: sudo add-apt-repository ppa:dwmw2/openconnect -y && sudo apt update
-     - name: Install openconnect
-       run: sudo apt install -y openconnect
-     - name: Save password to temp file
-       run: echo ${{ secrets.VPN_PWD }} > /tmp/vpnpassword
-     - name: Connect to VPN
-       run: |
-         sudo openconnect --script ./vpnc-script -u ${{ secrets.VPN_USER }} ${{ secrets.VPN_HOST }}:${{ secrets.VPN_PORT }} --protocol=fortinet --servercert ${{ secrets.VPN_SERVER_CERT }} --passwd-on-stdin < /tmp/vpnpassword
-     - name: Test if connected to VPN
-       run: |
-         ping -c4 ${{ secrets.SERVER_HOST_INSIDE_VPN }}
-     - name: Remove password file
-       run: rm /tmp/vpnpassword
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository to access its content
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Python 3.10
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.11
+
+      # Run pre-commit
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.1
+        env:
+          SKIP: no-commit-to-branch
