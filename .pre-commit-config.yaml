@@ -25,42 +25,35 @@ repos:
     -   id: black
         language_version: python3.10
         args: [--line-length, "100"]
-
 # python import sorting
 -   repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
     -   id: isort
         args: ["--profile", "black", "--filter-files"]
-
 -   repo: https://github.com/asottile/setup-cfg-fmt
     rev: v2.5.0
     hooks:
     -   id: setup-cfg-fmt
-    
 -   repo: https://github.com/asottile/reorder-python-imports
     rev: v3.13.0
     hooks:
     -   id: reorder-python-imports
-        args: [--py38-plus, --add-import, 'from __future__ import annotations']
-        
+        args: [--py38-plus, --add-import, 'from __future__ import annotations']  
 -   repo: https://github.com/asottile/add-trailing-comma
     rev: v3.1.0
     hooks:
     -   id: add-trailing-comma
-    
- # python upgrading syntax to newer version
+# python upgrading syntax to newer version
 -   repo: https://github.com/asottile/pyupgrade
     rev: v3.17.0
     hooks:
     -   id: pyupgrade
-        args: [--py38-plus]
-        
+        args: [--py38-plus]        
 -   repo: https://github.com/hhatto/autopep8
     rev: v2.3.1
     hooks:
     -   id: autopep8
-
 # python check (PEP8), programming errors and code complexity    
 -   repo: https://github.com/PyCQA/flake8
     rev: 7.1.1
@@ -73,8 +66,7 @@ repos:
             "E203,E402,E501,F401,F841",
             "--exclude",
             "logs/*,data/*",
-          ]
-    
+          ]   
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.11.2
     hooks:
