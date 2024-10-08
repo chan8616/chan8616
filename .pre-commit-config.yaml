@@ -16,7 +16,6 @@ repos:
       - id: check-toml
       - id: check-case-conflict
       - id: check-added-large-files
-      - id: double-quote-string-fixer
 
   # python code formatting
   - repo: https://github.com/psf/black
@@ -40,7 +39,15 @@ repos:
       - id: pyupgrade
         args: [--py310]
 
-# apply a consistent format to setup.cfg files
+  # python docstring formatting
+  - repo: https://github.com/myint/docformatter
+    rev: v1.7.5
+    hooks:
+      - id: docformatter
+        language_version: python3.10
+        args: [--in-place, --wrap-summaries=100, --wrap-descriptions=100]
+
+  # apply a consistent format to setup.cfg files
   - repo: https://github.com/asottile/setup-cfg-fmt
     rev: v2.5.0
     hooks:
