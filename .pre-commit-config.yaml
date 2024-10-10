@@ -1,6 +1,9 @@
 default_language_version:
   python: python3
 
+ci:
+  autoupdate_schedule: quarterly
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -40,13 +43,19 @@ repos:
         args: [--py310]
 
   # python docstring formatting
-  - repo: https://github.com/myint/docformatter
-    rev: v1.7.5
+  - repo: local
     hooks:
       - id: docformatter
+        name: docformatter
+        description: Formats docstrings to follow PEP 257.
+        entry: python -Im docformatter
+        additional_dependencies:
+          - docformatter == 1.7.5
+        args: [--in-place, --wrap-summaries=100, --wrap-descriptions=100]
         language: python
         language_version: python3.10
-        args: [--in-place, --wrap-summaries=100, --wrap-descriptions=100]
+        types:
+          - python
 
   # apply a consistent format to setup.cfg files
   - repo: https://github.com/asottile/setup-cfg-fmt
